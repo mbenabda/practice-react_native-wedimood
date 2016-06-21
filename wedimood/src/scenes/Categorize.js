@@ -8,39 +8,11 @@ import {
   TouchableOpacity
 } from 'react-native'
 
+import { Action, ArrayItemPickerWithLabel } from '../components'
+
 import { connect } from 'react-redux'
 const { changeDepartment, changeTeam } = require('../model/me').actions
 
-class ArrayItemPickerWithLabel extends Component {
-  _renderItem({id, name}) {
-    return (
-      <Picker.Item label={name} value={id} key={id}/>
-    )
-  }
-
-  render() {
-    const {selectedValue, onValueChange, items} = this.props
-
-    return (
-      <View>
-        <Text style={styles.label}>{this.props.label}</Text>
-        <Picker style={styles.picker} selectedValue={selectedValue} onValueChange={onValueChange}>
-          {items.map(this._renderItem)}
-        </Picker>
-      </View>
-    )
-  }
-}
-
-class Action extends Component {
-  render() {
-    return (
-      <TouchableOpacity onPress={this.props.onPress}>
-        <Text style={styles.action}>{this.props.text}</Text>
-      </TouchableOpacity>
-    )
-  }
-}
 
 class Settings extends Component {
   constructor(props) {
@@ -94,7 +66,6 @@ class Settings extends Component {
   render() {
     return (
       <View style={styles.container}>
-
         <ArrayItemPickerWithLabel
           label="Pick your deparment"
           selectedValue={this.state.selectedDepartment}
@@ -117,14 +88,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-
-  label: {
-    fontWeight: "bold",
-  },
-
-  picker: {
-  }
-});
+})
 
 module.exports = connect(
   ({me, organization}) => {
