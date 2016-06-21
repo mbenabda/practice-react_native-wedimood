@@ -4,7 +4,8 @@ import {
   StyleSheet,
   Text,
   View,
-  Picker
+  Picker,
+  TouchableOpacity
 } from 'react-native'
 
 import { connect } from 'react-redux'
@@ -22,8 +23,8 @@ class ArrayItemPickerWithLabel extends Component {
 
     return (
       <View>
-        <Text>{this.props.label}</Text>
-        <Picker selectedValue={selectedValue} onValueChange={onValueChange}>
+        <Text style={styles.label}>{this.props.label}</Text>
+        <Picker style={styles.picker} selectedValue={selectedValue} onValueChange={onValueChange}>
           {items.map(this._renderItem)}
         </Picker>
       </View>
@@ -31,6 +32,15 @@ class ArrayItemPickerWithLabel extends Component {
   }
 }
 
+class Action extends Component {
+  render() {
+    return (
+      <TouchableOpacity onPress={this.props.onPress}>
+        <Text style={styles.action}>{this.props.text}</Text>
+      </TouchableOpacity>
+    )
+  }
+}
 
 class Settings extends Component {
   constructor(props) {
@@ -44,7 +54,11 @@ class Settings extends Component {
       selectedTeam: this.props.selectedTeam || pickATeamForMe,
     }
 
-    this.onSkip = this.props.onSkip.bind(this)
+    this.onSave = (() => {
+      this.props.onSave(this.state.selectedDepartment, this.state.selectedTeam)
+    }).bind(this)
+
+    this.onSkip = this.props.onSkip
   }
 
   _onDepartmentChange(deparment) {
@@ -89,6 +103,9 @@ class Settings extends Component {
           />
 
           {this._renderTeamPicker()}
+
+        <Action text="OK" onPress={this.onSave}/>
+        <Action text="Skip" onPress={this.onSkip}/>
       </View>
     );
   }
@@ -99,8 +116,14 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#F5FCFF',
   },
+
+  label: {
+    fontWeight: "bold",
+  },
+
+  picker: {
+  }
 });
 
 module.exports = connect(
