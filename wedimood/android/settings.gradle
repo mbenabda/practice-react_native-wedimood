@@ -1,0 +1,3 @@
+rootProject.name = 'wedimood'
+
+include ':app'
