@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import {
-  AppRegistry,
   StyleSheet,
   Text,
   View,
@@ -12,7 +11,6 @@ import { Action, ArrayItemPickerWithLabel } from '../components'
 
 import { connect } from 'react-redux'
 const { changeDepartment, changeTeam } = require('../model/me').actions
-
 
 class Settings extends Component {
   constructor(props) {
