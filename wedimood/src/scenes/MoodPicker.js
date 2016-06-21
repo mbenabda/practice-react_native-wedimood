@@ -7,13 +7,13 @@ import {
 } from 'react-native'
 
 import { connect } from 'react-redux'
-import GridView from 'react-native-grid-view'
-
-const MOODS_PER_ROW = 3
 
 class MoodPicker extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      dataSource: new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2}).cloneWithRows(props.moods)
+    }
   }
 
   renderMood(mood) {
@@ -27,13 +27,10 @@ class MoodPicker extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <GridView
-          itemsPerRow={MOODS_PER_ROW}
-          renderItem={this.renderMood}
-          items={this.props.moods}
-          style={styles.grid}
+        <ListView
+          dataSource={this.state.dataSource}
+          renderRow={this.renderMood}
         />
-        <Text>yolo</Text>
       </View>
     );
   }
@@ -49,12 +46,6 @@ const styles = StyleSheet.create({
   },
 
   mood: {
-    width: 100,
-    height: 100,
-    padding: 20,
-    margin: 5,
-    borderRadius:50,
-    borderColor: 'black',
   }
 })
 

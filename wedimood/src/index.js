@@ -9,17 +9,17 @@ const store = createStore()
 
 class App extends Component {
   render() {
-    return (
-      <Provider store={store}>
-        <Categorize />
-      </Provider>
-    )
-
     // return (
     //   <Provider store={store}>
-    //     <MoodPicker />
+    //     <Categorize />
     //   </Provider>
     // )
+
+    return (
+      <Provider store={store}>
+        <MoodPicker />
+      </Provider>
+    )
   }
 }
 module.exports = App
