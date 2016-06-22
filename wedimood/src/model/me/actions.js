@@ -17,8 +17,13 @@ const fetchDeviceId = () => {
     dispatch(fetchDeviceIdRequest())
 
     return Promise.resolve('dev-mehdi')
-    .then(dispatch(fetchDeviceIdSuccess('dev-mehdi')))
-    .catch(fetchDeviceIdFailure)
+    .then((deviceId) => {
+      dispatch(fetchDeviceIdSuccess(deviceId))
+      return Promise.resolve()
+    })
+    .catch((error) => {
+      dispatch(fetchDeviceIdFailure(e))
+    })
   }
 }
 

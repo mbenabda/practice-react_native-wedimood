@@ -4,24 +4,37 @@ import {
   Text,
   View,
   ListView,
+  TouchableOpacity,
 } from 'react-native'
 
 import { connect } from 'react-redux'
+import { actions } from '../model/mood'
 
 class MoodPicker extends Component {
   constructor(props) {
     super(props);
+
     this.state = {
-      dataSource: new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2}).cloneWithRows(props.moods)
+      dataSource: new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2}).cloneWithRows(props.ratings)
     }
   }
 
-  renderMood(mood) {
-      return (
-        <Text style={styles.mood} key={mood}>
-          {mood}
-        </Text>
-      )
+  renderRating(rating) {
+    const onRateMood = () => {
+      this.props.onRateMood(rating.id)
+    }
+
+    return (
+      <TouchableOpacity onPress={onRateMood.bind(this)}>
+        <View style={styles.ratingContainer}>
+          <View style={[styles.smiley, styles['rating_' + rating.id]]} />
+
+          <Text style={styles.rating} key={rating.id}>
+            {rating.name}
+          </Text>
+        </View>
+      </TouchableOpacity>
+    )
   }
 
   render() {
@@ -29,7 +42,7 @@ class MoodPicker extends Component {
       <View style={styles.container}>
         <ListView
           dataSource={this.state.dataSource}
-          renderRow={this.renderMood}
+          renderRow={this.renderRating.bind(this)}
         />
       </View>
     );
@@ -41,20 +54,36 @@ const styles = StyleSheet.create({
     flex: 1,
   },
 
-  grid: {
+  ratingContainer: {
 
   },
 
-  mood: {
+  smiley: {
+      backgroundColor: '#f4f499',
+      borderRadius: 40,
+      height: 80,
+      width: 80,
+      borderColor: 'black',
+      borderWidth: 3,
+      margin: 5,
+      alignItems: 'center',
+      alignSelf: 'center'
+  },
+
+  rating_angry: { backgroundColor: '#d73b3e' },
+  rating_awesome: { backgroundColor: '#00ff00' },
+
+  rating: {
   }
 })
 
 module.exports = connect(
-  (state) => ({
-    moods: [
-      "angry", "sad", "bored",
-      "fine", "happy", "awesome"
-    ]
+  ({mood}) => ({
+    ratings: mood.availableRatings
   }),
-  (dispatch) => ({})
+  (dispatch) => ({
+      onRateMood: (rating) => {
+        dispatch(actions.rateMood(rating))
+      }
+  })
 )(MoodPicker)
