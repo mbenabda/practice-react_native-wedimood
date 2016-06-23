@@ -1,7 +1,8 @@
 import { createStore, applyMiddleware, combineReducers } from 'redux';
 import modules from './model'
 import thunk from 'redux-thunk';
-import { actions } from './model/mood'
+import { actions as mood } from './model/mood'
+import { actions as me } from './model/me'
 
 const dispatchLogger = ({ getState }) => {
   return (next) => (action) => {
@@ -29,7 +30,11 @@ const makeStore = (data = {}) => {
 
 const store = makeStore()
 setTimeout(
-  () => { store.dispatch(actions.startReceivingRatings()) }
+  () => {
+    store.dispatch(me.fetchDeviceId()).then(() => {
+      store.dispatch(mood.startReceivingRatings())
+    })    
+  }
 )
 
 module.exports = store

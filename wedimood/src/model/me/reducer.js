@@ -1,6 +1,6 @@
 import {
-  SET_DEVICE_ID_SUCCESS,
-  SET_DEVICE_ID_FAILURE,
+  FETCH_DEVICE_ID_SUCCESS,
+  FETCH_DEVICE_ID_FAILURE,
   CHANGE_DEPARTMENT_SUCCESS,
   CHANGE_DEPARTMENT_FAILURE,
   CHANGE_TEAM_SUCCESS,
@@ -22,8 +22,8 @@ const errorReducer = (state, { payload: error }) => {
   }
 }
 
-const actionReducers = {
-  SET_DEVICE_ID_SUCCESS: (state, { payload: deviceId }) => {
+module.exports = handleActions({
+  FETCH_DEVICE_ID_SUCCESS: (state, { payload: deviceId }) => {
     return {
       ...state,
       error: undefined,
@@ -31,7 +31,7 @@ const actionReducers = {
     }
   },
 
-  SET_DEVICE_ID_FAILURE: errorReducer,
+  FETCH_DEVICE_ID_FAILURE: errorReducer,
 
   CHANGE_DEPARTMENT_SUCCESS: (state, { payload: department }) => {
     return {
@@ -52,6 +52,4 @@ const actionReducers = {
   },
 
   CHANGE_TEAM_FAILURE: errorReducer,
-}
-
-module.exports = handleActions(actionReducers, initialState)
+}, initialState)

@@ -21,16 +21,16 @@ class MoodPicker extends Component {
 
   renderRating(rating) {
     const onRateMood = () => {
-      this.props.onRateMood(rating.id)
+      this.props.onRateMood(rating.value)
     }
 
     return (
       <TouchableOpacity onPress={onRateMood.bind(this)}>
         <View style={styles.ratingContainer}>
-          <View style={[styles.smiley, styles['rating_' + rating.id]]} />
+          <View style={[styles.smiley, styles['rating_' + rating.code]]} />
 
-          <Text style={styles.rating} key={rating.id}>
-            {rating.name}
+          <Text style={styles.rating} key={rating.code}>
+            {rating.code}
           </Text>
         </View>
       </TouchableOpacity>
@@ -84,6 +84,11 @@ module.exports = connect(
   (dispatch) => ({
       onRateMood: (rating) => {
         dispatch(actions.rateMood(rating))
+        .then(() => {
+          console.log("rated " + rating)
+        }, (e) => {
+          console.log("oops !", e)
+        })
       }
   })
 )(MoodPicker)

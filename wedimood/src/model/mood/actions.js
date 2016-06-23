@@ -7,13 +7,14 @@ import {
 
 import firebase from "firebase"
 
+const ratingsRef = new firebase("https://wedimood.firebaseio.com").child("ratings")
+
 const rateMoodRequest = () => ({
   type: RATE_MOOD_REQUEST,
 })
 
-const rateMoodSuccess = (moodId) => ({
+const rateMoodSuccess = () => ({
   type: RATE_MOOD_SUCCESS,
-  payload: moodId
 })
 
 const rateMoodFailure = (error) => ({
@@ -21,17 +22,27 @@ const rateMoodFailure = (error) => ({
   payload: error
 })
 
-const rateMood = (moodId) => {
+const rateMood = (rating) => {
   return (dispatch, getState) => {
     dispatch(rateMoodRequest())
 
-    return Promise.resolve()
-    .then(() => {
-      dispatch(rateMoodSuccess(moodId))
-      return Promise.resolve()
-    })
-    .catch((error) => {
-      dispatch(rateMoodFailure(error))
+    return new Promise((resolve, reject) => {
+      const ratingRecord = {
+        rated_at: Date.now(),
+        rating: rating,
+        rating_over: getState().mood.maxRating,
+        rated_by: getState().me.deviceId
+      }
+
+      ratingsRef.push(ratingRecord, (error) => {
+        if(error) {
+          dispatch(rateMoodFailure(error))
+          reject(error)
+        } else {
+          dispatch(rateMoodSuccess())
+          resolve()
+        }
+      })
     })
   }
 }
@@ -41,14 +52,16 @@ const receiveRatings = (ratings) => ({
   payload: ratings,
 })
 
-const database = new firebase("https://wedimood.firebaseio.com").child("ratings")
 
 const startReceivingRatings = () => {
   return (dispatch) => {
-    database.on('value', (ratingRecords) => {
+    ratingsRef.on('value', (ratingRecords) => {
       var ratings = []
       ratingRecords.forEach((ratingRecord) => {
-        ratings.push(ratingRecord.val())
+        ratings.push({
+          ...ratingRecord.val(),
+          id: ratingRecord.key()
+        })
       })
       dispatch(receiveRatings(ratings))
     })
