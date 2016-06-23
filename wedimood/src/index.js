@@ -1,11 +1,9 @@
 import React, { Component } from 'react'
 import { Provider } from 'react-redux'
-import createStore from './createStore'
+import store from './createStore'
 
 import Categorize from './scenes/Categorize'
 import MoodPicker from './scenes/MoodPicker'
-
-const store = createStore()
 
 class App extends Component {
   render() {

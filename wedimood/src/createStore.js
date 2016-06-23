@@ -1,6 +1,7 @@
 import { createStore, applyMiddleware, combineReducers } from 'redux';
 import modules from './model'
 import thunk from 'redux-thunk';
+import { actions } from './model/mood'
 
 const dispatchLogger = ({ getState }) => {
   return (next) => (action) => {
@@ -16,12 +17,19 @@ const stateReducers = Object
   .reduce((accumulator, moduleKey) => {
     accumulator[moduleKey] = modules[moduleKey].reducer;
     return accumulator;
-  }, {});
+  }, {})
 
-module.exports = (data = {}) => {
+const makeStore = (data = {}) => {
   return createStore(
     combineReducers(stateReducers),
     data,
     applyMiddleware(dispatchLogger, thunk)
   )
 }
+
+const store = makeStore()
+setTimeout(
+  () => { store.dispatch(actions.startReceivingRatings()) }
+)
+
+module.exports = store
