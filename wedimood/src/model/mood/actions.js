@@ -4,9 +4,8 @@ import {
   RATE_MOOD_FAILURE,
   RECEIVE_RATINGS,
 } from './constants'
-
+import moment from 'moment'
 import firebase from "firebase"
-
 const ratingsRef = new firebase("https://wedimood.firebaseio.com").child("ratings")
 
 const rateMoodRequest = () => ({
@@ -28,7 +27,7 @@ const rateMood = (rating) => {
 
     return new Promise((resolve, reject) => {
       const ratingRecord = {
-        rated_at: Date.now(),
+        rated_at: moment.utc().format(),
         rating: rating,
         rating_over: getState().mood.maxRating,
         rated_by: getState().me.deviceId
@@ -58,8 +57,10 @@ const startReceivingRatings = () => {
     ratingsRef.on('value', (ratingRecords) => {
       var ratings = []
       ratingRecords.forEach((ratingRecord) => {
+        let val = ratingRecord.val();
+        val.rated_at = moment.utc(val.rated_at) // parse utc moment
         ratings.push({
-          ...ratingRecord.val(),
+          ...val,
           id: ratingRecord.key()
         })
       })
