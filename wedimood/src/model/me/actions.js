@@ -12,16 +12,17 @@ import {
   CHANGE_TEAM_FAILURE,
 } from './constants'
 
-import {AsyncStorage} from 'react-native'
+import { AsyncStorage } from 'react-native'
+import DeviceInfo from 'react-native-device-info'
 
 const generateUUID = () => {
-  return Promise.resolve('dev-mehdi')
+  return Promise.resolve(DeviceInfo.getUniqueID())
 }
 
-const lookupOrCreateInStorage = (key, promiseResolvingValue) => {
+const lookupOrCreateInStorage = (key, getPromiseResolvingValue) => {
   return AsyncStorage.getItem(key)
   .then((storedValue) => {
-    return storedValue || promiseResolvingValue
+    return storedValue || getPromiseResolvingValue()
       .then((computedValue) => {
         return AsyncStorage.setItem(key, computedValue).then(() => { return computedValue })
       })
@@ -32,7 +33,7 @@ const fetchDeviceId = () => {
   return (dispatch, getState) => {
     dispatch(fetchDeviceIdRequest())
 
-    return lookupOrCreateInStorage('wedimood:UUID', generateUUID())
+    return lookupOrCreateInStorage('wedimood:UUID', generateUUID)
     .then((deviceId) => {
       dispatch(fetchDeviceIdSuccess(deviceId))
       return Promise.resolve()
